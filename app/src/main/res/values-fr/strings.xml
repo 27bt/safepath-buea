@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">SafePath Buea</string>
+    <string name="report_hazard">Signaler un danger</string>
+    <string name="nearby_hazards">Dangers à proximité</string>
+    <string name="settings">Paramètres</string>
+</resources>

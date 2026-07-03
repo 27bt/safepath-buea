@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /hazards/{hazardId} {
+      // Any authenticated user (including anonymous) may read active hazards.
+      // Expired/merged-away docs are hidden from clients entirely.
+      allow read: if request.auth != null && resource.data.status == 'active';
+
+      allow create: if request.auth != null
+        && request.resource.data.keys().hasAll([
+             'type', 'location', 'geohash', 'severity', 'confidence_count',
+             'confirmed_by', 'status', 'source', 'created_at', 'last_confirmed_at', 'reporter_id'
+           ])
+        && request.resource.data.type in [
+             'pothole', 'open_gutter', 'steep_slope', 'construction',
+             'blocked_path', 'traffic', 'crowd', 'other'
+           ]
+        && request.resource.data.severity in ['low', 'medium', 'high']
+        && request.resource.data.status == 'active'
+        && request.resource.data.confidence_count == 1
+        && request.resource.data.confirmed_by is list
+        && request.resource.data.confirmed_by.size() == 1
+        && request.resource.data.reporter_id is string
+        && request.resource.data.reporter_id.size() > 0
+        && request.resource.data.created_at == request.time
+        && request.resource.data.last_confirmed_at == request.time;
+
+      // Merging duplicates and expiring stale reports are server-only
+      // operations performed by Cloud Functions via the Admin SDK, which
+      // bypasses rules entirely. No client may edit or delete any report,
+      // including their own - this is what "can't edit others' reports"
+      // becomes once identities are hashed and unverifiable by rules.
+      allow update: if false;
+      allow delete: if false;
+    }
+  }
+}

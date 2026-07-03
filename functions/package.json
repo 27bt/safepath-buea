@@ -1,0 +1,17 @@
+{
+  "name": "safepath-buea-functions",
+  "description": "Cloud Functions for SafePath Buea: hazard deduplication and expiry",
+  "engines": {
+    "node": "20"
+  },
+  "main": "index.js",
+  "dependencies": {
+    "firebase-admin": "^12.5.0",
+    "firebase-functions": "^5.1.1",
+    "geofire-common": "^6.0.0"
+  },
+  "devDependencies": {
+    "firebase-functions-test": "^3.3.0"
+  },
+  "private": true
+}
