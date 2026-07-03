@@ -10,4 +10,4 @@
 local.properties
 /app/build
 /app/google-services.json
-.claude/settings.local.json
+.claude/
